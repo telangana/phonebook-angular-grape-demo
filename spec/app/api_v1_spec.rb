@@ -9,43 +9,52 @@ describe Phonebook::APIv1 do
   end
 
   describe Phonebook::APIv1 do
+    let(:valid_attributes){ { name: 'Marcel', phone: '1235455667688' } }
 
     before do
       Phonebook::Model::Contact.repository= Phonebook::Persistence::Memory.new
     end
 
-    describe 'GET /contacts.json' do
-      it 'returns an empty array of contacts' do
+    describe 'GET /contacts' do
+      it 'json: returns an empty array of contacts' do
         get '/contacts.json'
         last_response.status.should == 200
         JSON.parse(last_response.body).should == []
       end
+
+      it 'has one contact' do
+        Phonebook::Model::Contact.repository.add(Phonebook::Model::Contact.new(valid_attributes))
+
+        get '/contacts.json'
+        last_response.status.should == 200
+        contacts = MultiJson.load(last_response.body, symbolize_keys: true)
+        contacts.size.should eql 1
+        contacts.first[:name].should eql valid_attributes[:name]
+        contacts.first[:phone].should eql valid_attributes[:phone]
+      end
+
+
     end
 
     describe 'POST /contacts' do
-      let(:params){ { 'name' => 'Marcel', 'phone' => '1235455667688' } }
-
       it 'create with valid attributes' do
-        post '/contacts', params
+        post '/contacts', valid_attributes
         last_response.status.should == 201
 
-        result = JSON.parse(last_response.body).to_h
+        result = MultiJson.load(last_response.body, symbolize_keys: true)
 
-        result['id'].should be_a Integer
-        result['name'].should eql params['name']
-        result['phone'].should eql params['phone']
+        result[:id].should be_a Integer
+        result[:name].should eql valid_attributes[:name]
+        result[:phone].should eql valid_attributes[:phone]
       end
     end
 
     describe 'PUT /contacts/:id' do
-      let(:params){ { 'name' => 'Marcel', 'phone' => '1235455667688' } }
       let(:new_attributes){ { name: 'Marcel Scherf', phone: '491762344545656' } }
 
-      before do
-        Phonebook::Model::Contact.repository.add(Phonebook::Model::Contact.new(params))
-      end
-
       it 'update contact info' do
+        Phonebook::Model::Contact.repository.add(Phonebook::Model::Contact.new(valid_attributes))
+
         last_contact = Phonebook::Model::Contact.repository.all.last
         put "/contacts/#{last_contact.id}", new_attributes
 

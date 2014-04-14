@@ -2,6 +2,7 @@ source 'http://rubygems.org'
 
 gem 'grape'
 gem 'grape-entity'
+gem 'multi_json'
 gem 'activemodel'
 
 gem 'redis'

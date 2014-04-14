@@ -137,6 +137,7 @@ DEPENDENCIES
   grape
   grape-entity
   guard-rspec
+  multi_json
   puma
   rack
   rack-contrib

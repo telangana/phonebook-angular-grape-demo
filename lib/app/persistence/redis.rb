@@ -40,7 +40,7 @@ module Phonebook
       def all
         keys = @store.keys("#{@klass_name}::*")
         unless keys.empty?
-          @store.mget(*keys).map{|item_data| @klass.new(JSON.load(item_data)) }
+          @store.mget(*keys).map{|item_data| @klass.new(MultiJson.load(item_data)) }
         else
           []
         end
