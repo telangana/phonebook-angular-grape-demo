@@ -12,7 +12,7 @@ describe Phonebook::APIv1 do
     let(:valid_attributes){ { name: 'Marcel', phone: '1235455667688' } }
 
     before do
-      Phonebook::Model::Contact.repository= Phonebook::Persistence::Memory.new
+      Phonebook::Model::Contact.repository = Framework::Persistence::Memory.new
     end
 
     describe 'GET /contacts' do

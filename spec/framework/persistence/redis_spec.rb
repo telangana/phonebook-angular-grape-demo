@@ -1,10 +1,10 @@
 require_relative '../../spec_helper'
 require_relative '../../../lib/app/models/contact'
-require_relative '../../../lib/app/persistence/redis'
+require_relative '../../../lib/framework/persistence/redis'
 
-describe 'Phonebook::Persistence::Redis' do
+describe 'Framework::Persistence::Redis' do
 
-  subject{ Phonebook::Persistence::Redis.new(Phonebook::Model::Contact, 'phonebook_test') }
+  subject{ Framework::Persistence::Redis.new(Phonebook::Model::Contact, 'phonebook_test') }
 
   before do
     subject.clear!

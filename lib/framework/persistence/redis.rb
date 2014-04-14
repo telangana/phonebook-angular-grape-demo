@@ -1,4 +1,4 @@
-module Phonebook
+module Framework
   module Persistence
     class Redis
 
@@ -36,6 +36,14 @@ module Phonebook
         item
       end
 
+      def delete(id)
+        if item = find(id)
+          @store.del([@klass_name, id].join('::'))
+          item
+        else
+          nil
+        end
+      end
 
       def all
         keys = @store.keys("#{@klass_name}::*")

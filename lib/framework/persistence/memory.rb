@@ -1,7 +1,8 @@
-module Phonebook
+module Framework
   module Persistence
 
     # a simple memory based store
+    # useful for testing purposes
     class Memory
       def initialize
         @store = Hash.new
@@ -18,6 +19,14 @@ module Phonebook
 
       def find(id)
         @store[id.to_i]
+      end
+
+      def delete(id)
+        if @store.key?(id.to_i)
+          @store.delete(id.to_i)
+        else
+          nil
+        end
       end
 
       def all

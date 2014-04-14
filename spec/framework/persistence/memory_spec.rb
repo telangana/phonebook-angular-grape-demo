@@ -1,9 +1,9 @@
 require_relative '../../spec_helper'
 require_relative '../../../lib/app/models/contact'
-require_relative '../../../lib/app/persistence/memory'
+require_relative '../../../lib/framework/persistence/memory'
 
-describe 'Phonebook::Persistence::Memory' do
-  subject{ Phonebook::Persistence::Memory.new }
+describe 'Framework::Persistence::Memory' do
+  subject{ Framework::Persistence::Memory.new }
   let(:attributes){ {name: 'Marcel', phone: '12790384848'} }
   let(:contact){ Phonebook::Model::Contact.new(attributes) }
 

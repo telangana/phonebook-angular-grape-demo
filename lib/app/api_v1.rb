@@ -1,7 +1,7 @@
 require_relative '../phonebook'
 
 module Phonebook
-  Model::Contact.repository = Persistence::Redis.new(Model::Contact, 'phonebook_development')
+  Model::Contact.repository = ::Framework::Persistence::Redis.new(Model::Contact, 'phonebook_development')
 
   class APIv1 < ::Grape::API
     version 'v1', using: :header, vendor: 'phonebook'
@@ -42,6 +42,15 @@ module Phonebook
       put ':id' do
         Model::Contact.repository.update(Phonebook::Model::Contact.new({ id: params[:id], name: params[:name], phone: params[:phone] }))
       end
+
+      desc 'Delete contact'
+      params do
+        requires :id, type: Integer, desc: 'ID of contact, that should be deleted'
+      end
+      delete ':id' do
+        Model::Contact.repository.delete(params[:id])
+      end
+
     end
 
     before do
