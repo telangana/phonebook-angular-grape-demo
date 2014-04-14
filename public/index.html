@@ -1,0 +1,43 @@
+<html>
+  <head>
+    <title>Phonebook</title>
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/stylesheets/application.css.scss" />
+
+  </head>
+
+  <body ng-app="phonebook">
+    <div id="main" ng-controller="contactsController">
+      <h1>Contacts</h1>
+
+      <button type="button" class="btn btn-default btn-me">
+        <a href="/contacts.csv"><i class="glyphicon glyphicon-download"></i> Download CSV</a>
+      </button>
+
+      <button type="button" class="btn btn-default btn-me">
+        <i class="glyphicon glyphicon-upload"></i> Upload CSV
+      </button>
+
+      <input type="search" ng-model="q" placeholder="filter contacts..." />
+
+      <form ng-submit="addContact()">
+        <input type="text" name="contact[name]" ng-model="newContact.name"/>
+        <input type="text" name="contact[phone]" ng-model="newContact.phone"/>
+        <button>Add contact</button>
+      </form>
+
+      <table class="table table-bordered table-hover table-condensed" style="width:500px">
+        <tr style="font-weight: bold">
+          <td>Name</td>
+          <td>Phone</td>
+        </tr>
+        <tr ng-repeat="contact in contacts | orderBy:'-id' | filter:q" ng-controller="contactController">
+          <td inline-editable inline-editable-model="contact" inline-editable-attribute="contact.name"></td>
+          <td inline-editable inline-editable-model="contact" inline-editable-attribute="contact.phone"></td>
+        </tr>
+      </table>
+    </div>
+
+    <script src="/assets/javascript/application.js"></script>
+  </body>
+</html>
