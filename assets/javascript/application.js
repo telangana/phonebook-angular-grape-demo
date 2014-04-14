@@ -125,7 +125,6 @@ phonebook.directive('inlineEditable', function(){
 
     },
     template: '<span ng-bind="modelAttribute" ng-show="!editing"></span><input type="text" ng-model="modelAttribute" ng-show="editing">'
-
   };
 });
 

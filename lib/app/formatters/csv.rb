@@ -5,7 +5,7 @@ module Phonebook
     class CSV
 
       def self.call(object, env)
-        return nil if object.empty?
+        return nil if object.nil? || object.empty?
 
         ::CSV.generate(col_sep: "\t", encoding: 'UTF-8') do |csv|
 
