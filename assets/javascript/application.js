@@ -16,6 +16,11 @@ phonebook.factory('Contact', ['ActiveResource', function(ActiveResource){
     this.number('id');
     this.string('name');
     this.string('phone');
+
+    this.validates({
+      name: { presence: true },
+      phone: { presence: true }
+    });
   }
 
   Contact.inherits(ActiveResource.Base);
@@ -38,10 +43,17 @@ phonebook.controller('contactsController', ['$scope', '$window', 'Contact',
     };
 
     $scope.addContact = function(){
+      $scope.newContact.validate();
       $scope.newContact.$save().then(function(response){
         $scope.setupNewContact();
+        $scope.newContact.clearErrors();
         $scope.contacts.push(response);
       });
+    };
+
+    $scope.remove = function(index){
+      var contact = $scope.contacts.splice(index, 1)[0];
+      contact.$delete();
     };
 
     $scope.setupNewContact = function(){
@@ -53,9 +65,6 @@ phonebook.controller('contactsController', ['$scope', '$window', 'Contact',
 }]);
 
 
-phonebook.controller('contactController', ['$scope', 'Contact', function($scope, Contact){
-
-}]);
 
 
 phonebook.directive('inlineEditable', function(){
@@ -71,6 +80,12 @@ phonebook.directive('inlineEditable', function(){
       element.bind('click', function(){
         if(!scope.editing){
           scope.$apply(edit);
+        }
+      });
+
+      element.find('input').bind('blur', function(){
+        if(scope.editing){
+          scope.$apply(cancel);
         }
       });
 
@@ -90,20 +105,44 @@ phonebook.directive('inlineEditable', function(){
         scope.model.$save().then(function(response){
           scope.model = response;
         });
+
         scope.originalContact = null;
         scope.editing = false;
       };
 
       angular.element(element.find('input')[0]).bind('keydown', function(event){
         switch(event.keyCode){
-          case 27: scope.$apply(cancel); break;
-          case 13: scope.$apply(save); break;
+          case 27:
+            // ESC cancel edit mode
+            scope.$apply(cancel);
+            break;
+          case 9, 13:
+            // TAB, ENTER => save changes
+            scope.$apply(save);
+            break;
         }
       });
 
     },
-    template: '<span ng-bind="modelAttribute" ng-show="!editing"></span><input type="text" ng-model="modelAttribute" ng-show="editing"/>'
+    template: '<span ng-bind="modelAttribute" ng-show="!editing"></span><input type="text" ng-model="modelAttribute" ng-show="editing">'
 
   };
 });
 
+
+phonebook.directive('confirmationNeeded', function () {
+  return {
+    priority: 1,
+    terminal: true,
+    link: function (scope, element, attr) {
+      var msg = attr.confirmationNeeded || "Are you sure?";
+      var clickAction = attr.ngClick;
+
+      element.bind('click', function () {
+        if(window.confirm(msg)){
+          scope.$eval(clickAction)
+        }
+      });
+    }
+  };
+});
